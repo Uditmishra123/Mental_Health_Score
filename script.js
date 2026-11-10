@@ -1,5 +1,5 @@
 // Base URL of the FastAPI server (not the /docs page)
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "https://mental-health-score-1-y3vh.onrender.com";
 const TIMEOUT_MS = 15000;
 const GAUGE_LENGTH = 251.33; // length of the semicircle path
 const MAX_SCORE = 10;        // gauge scale; adjust if your model uses a different range
