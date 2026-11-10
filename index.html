@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Mental Health Score Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="layout">
+    <aside class="side">
+      <h1>How is screen time affecting student wellbeing?</h1>
+      <p class="lead">Enter a student's habits and the model estimates a mental health score.</p>
+
+      <section class="result" id="result" aria-live="polite">
+        <div class="state state-idle" id="stateIdle">
+          <p>Your result will appear here.</p>
+        </div>
+
+        <div class="state state-loading" id="stateLoading" hidden>
+          <div class="spinner" aria-hidden="true"></div>
+          <p>Analysing responses…</p>
+        </div>
+
+        <div class="state state-done" id="stateDone" hidden>
+          <svg class="gauge" viewBox="0 0 200 120" role="img" aria-label="Score gauge">
+            <path class="track" d="M 20 100 A 80 80 0 0 1 180 100" />
+            <path class="fill" id="gaugeFill" d="M 20 100 A 80 80 0 0 1 180 100" />
+          </svg>
+          <p class="score"><span id="scoreValue">0.0</span><small> / 10</small></p>
+          <p class="band" id="scoreBand"></p>
+          <p class="note" id="scoreNote"></p>
+        </div>
+
+        <div class="state state-error" id="stateError" hidden role="alert">
+          <strong id="errorTitle">Something went wrong</strong>
+          <p id="errorMsg"></p>
+        </div>
+      </section>
+    </aside>
+
+    <form id="form" class="form" novalidate>
+      <fieldset>
+        <legend>About the student</legend>
+        <div class="grid">
+          <div class="field">
+            <label for="Age">Age</label>
+            <input type="number" id="Age" name="Age" min="10" max="100" step="1" placeholder="e.g. 20" required>
+            <p class="err" data-for="Age"></p>
+          </div>
+          <div class="field">
+            <label for="Country">Country</label>
+            <input type="text" id="Country" name="Country" list="countries" placeholder="e.g. India" required>
+            <datalist id="countries">
+              <option>India</option><option>USA</option><option>Canada</option><option>Australia</option>
+              <option>UK</option><option>Germany</option><option>Mexico</option><option>Turkey</option><option>France</option>
+            </datalist>
+            <p class="err" data-for="Country"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="label">Gender</span>
+          <div class="seg" data-name="Gender">
+            <label><input type="radio" name="Gender" value="Male" required><span>Male</span></label>
+            <label><input type="radio" name="Gender" value="Female"><span>Female</span></label>
+          </div>
+          <p class="err" data-for="Gender"></p>
+        </div>
+
+        <div class="field">
+          <span class="label">Academic level</span>
+          <div class="seg" data-name="Academic_Level">
+            <label><input type="radio" name="Academic_Level" value="High School" required><span>High School</span></label>
+            <label><input type="radio" name="Academic_Level" value="Undergraduate"><span>Undergraduate</span></label>
+            <label><input type="radio" name="Academic_Level" value="Graduate"><span>Graduate</span></label>
+          </div>
+          <p class="err" data-for="Academic_Level"></p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Social media use</legend>
+        <div class="grid">
+          <div class="field">
+            <label for="Most_Used_Platform">Most used platform</label>
+            <select id="Most_Used_Platform" name="Most_Used_Platform" required>
+              <option value="" selected disabled>Choose a platform</option>
+              <option>Facebook</option><option>LinkedIn</option><option>Instagram</option>
+              <option>Snapchat</option><option>Twitter</option><option>YouTube</option>
+              <option>TikTok</option><option>LINE</option><option>KakaoTalk</option>
+              <option>VKontakte</option><option>WhatsApp</option><option>WeChat</option>
+            </select>
+            <p class="err" data-for="Most_Used_Platform"></p>
+          </div>
+          <div class="field">
+            <label for="Avg_Daily_Usage_Hours">Daily usage (hours)</label>
+            <input type="number" id="Avg_Daily_Usage_Hours" name="Avg_Daily_Usage_Hours" min="0" max="24" step="0.1" placeholder="0 – 24" required>
+            <p class="err" data-for="Avg_Daily_Usage_Hours"></p>
+          </div>
+          <div class="field">
+            <label for="Daily_Unlocks">Phone unlocks per day</label>
+            <input type="number" id="Daily_Unlocks" name="Daily_Unlocks" min="0" step="1" placeholder="e.g. 60" required>
+            <p class="err" data-for="Daily_Unlocks"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="label">Main purpose</span>
+          <div class="seg" data-name="Purpose_Of_Use">
+            <label><input type="radio" name="Purpose_Of_Use" value="Networking" required><span>Networking</span></label>
+            <label><input type="radio" name="Purpose_Of_Use" value="Education"><span>Education</span></label>
+            <label><input type="radio" name="Purpose_Of_Use" value="Entertainment"><span>Entertainment</span></label>
+            <label><input type="radio" name="Purpose_Of_Use" value="News"><span>News</span></label>
+          </div>
+          <p class="err" data-for="Purpose_Of_Use"></p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Daily routine</legend>
+        <div class="grid">
+          <div class="field">
+            <label for="Study_Hours">Study hours</label>
+            <input type="number" id="Study_Hours" name="Study_Hours" min="0" step="0.1" placeholder="per day" required>
+            <p class="err" data-for="Study_Hours"></p>
+          </div>
+          <div class="field">
+            <label for="Physical_Activity_Hours">Physical activity hours</label>
+            <input type="number" id="Physical_Activity_Hours" name="Physical_Activity_Hours" min="0" step="0.1" placeholder="per day" required>
+            <p class="err" data-for="Physical_Activity_Hours"></p>
+          </div>
+          <div class="field">
+            <label for="Sleep_Hours_Per_Night">Sleep hours per night</label>
+            <input type="number" id="Sleep_Hours_Per_Night" name="Sleep_Hours_Per_Night" min="0" step="0.1" placeholder="e.g. 7" required>
+            <p class="err" data-for="Sleep_Hours_Per_Night"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="label">Stress level</span>
+          <div class="seg" data-name="Stress_Level">
+            <label><input type="radio" name="Stress_Level" value="Low" required><span>Low</span></label>
+            <label><input type="radio" name="Stress_Level" value="Medium"><span>Medium</span></label>
+            <label><input type="radio" name="Stress_Level" value="High"><span>High</span></label>
+            <label><input type="radio" name="Stress_Level" value="Very High"><span>Very High</span></label>
+          </div>
+          <p class="err" data-for="Stress_Level"></p>
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="submit" id="submitBtn" class="btn">Predict score</button>
+        <button type="reset" id="resetBtn" class="btn ghost">Clear form</button>
+      </div>
+    </form>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
